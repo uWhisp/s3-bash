@@ -229,7 +229,7 @@ function writeStringToSign
 	
 	writeStringToSignAmazonHeaders "$outputFile"
 	
-	urlPath="$(echo "$url" | awk 'BEGIN { FS="[?]"} { print $1 }')"
+	urlPath="/$bucket$(echo "$url" | awk 'BEGIN { FS="[?]"} { print $1 }')"
 	urlQueryString="$(echo "$url" | awk 'BEGIN { FS="[?]"} { print $2 }')"
 	printf "$urlPath" >> "$outputFile"
 	if [ "$urlQueryString" = "acl" ] || [ "$urlQueryString" = "torrent" ]; then
@@ -295,7 +295,7 @@ function writeAmazonHeadersForCurl
 function runCurl
 {
 	local verbAndAnyData="$1"
-	local fullUrl="$protocol://s3.amazonaws.com$url"
+	local fullUrl="$protocol://$bucket.s3.amazonaws.com$url"
 	createTemporaryFile "curl"
 	local tempCurlCommand="$(mostRecentTemporaryFile)"
 	local cleanUpCommand="rm -f "$tempCurlCommand""

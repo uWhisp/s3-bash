@@ -25,12 +25,13 @@ function printHelpAndExit
 	printf "%s: version %s\n" "$weAreKnownAs" "$version"
 	printf "Part of s3-bash. Latest version is at %s\n" 'http://code.google.com/p/s3-bash/'
 	printf "Usage %s: -h\n" "$weAreKnownAs"
-	printf "Usage %s: [-vS] [-H file] [-a file] -k key -s file url\n" "$weAreKnownAs"
+	printf "Usage %s: [-vS] [-H file] [-a file] -k key -b bucket -s file url\n" "$weAreKnownAs"
 	printf " Option\tType\tRequirement\tDescription\n"
 	printf " -h\t\tprecedent\tprint this help\n"
 	printf " -v\t\toptional\tverbose output\n"
 	printf " -k\tstring\tmandatory\tAWS Access Key Id\n"
 	printf " -s\tfile\tmandatory\tAWS Secret Access Key Id File\n"
+	printf " -b\tS3\tbucket\n"
 	printf " -S\t\toptional\tUse https\n"
 	printf " -H\tfile\toptional\tFile to write response headers to\n"
 	printf " -a\tfile\toptional\tFile to read Amazon custom headers from (X-Amz-Date is not allowed)\n"
@@ -46,12 +47,13 @@ function parseOptions
 {
 	verbose=""
 	url=""
+	bucket=""
 	awsAccessKeyId=""
 	awsAccessSecretKeyIdFile=""
 	protocol="http"
 	dumpHeaderFile="/dev/null"
 	amazonHeaderFile="/dev/null"
-	while getopts "hvk:s:SH:a:" optionName; do		
+	while getopts "hvk:s:b:SH:a:" optionName; do
 		case "$optionName" in
 			h)	printHelpAndExit 0;;
 			v)	verbose="-v";;
@@ -60,6 +62,7 @@ function parseOptions
 				if [ ! -e "$awsAccessSecretKeyIdFile" ]; then
 					printErrorHelpAndExit "AWS Secret Key Id file does not exist" $userSpecifiedDataErrorExitCode
 				fi;;
+			b)	bucket="$OPTARG";;
 			S)	protocol="https";;
 			H)	dumpHeaderFile="$OPTARG";;
 			a)	amazonHeaderFile="$OPTARG"
@@ -82,6 +85,8 @@ function parseOptions
 		printErrorHelpAndExit "AWS Secret Access Key file not specified" $userSpecifiedDataErrorExitCode
 	elif [ -z "$awsAccessKeyId" ]; then
 		printErrorHelpAndExit "AWS Access Key Id not specified" $userSpecifiedDataErrorExitCode
+	elif [ -z "$bucket" ]; then
+		printErrorHelpAndExit "S3 bucket not specified" $userSpecifiedDataErrorExitCode
 	fi
 }
 
