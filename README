@@ -1,10 +1,10 @@
 > Get bucket listing:
 
-s3-get -k {accesskey} -s /{path}/{secretid} /{bucketname}
+s3-get -k {accesskey} -s /{path}/{secretid} -b {bucketname} /
 
 > Get file from bucket:
 
-s3-get -k {accesskey} -s /{path}/{secretid} /{bucketname}/{filename} > {filename}
+s3-get -k {accesskey} -s /{path}/{secretid} -b {bucketname} /{filename} > {filename}
 
 > Upload file to bucket:
 
